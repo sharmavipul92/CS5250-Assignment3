@@ -1,0 +1,1 @@
+cmd_/home/vipul/Downloads/one/one.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/vipul/Downloads/one/one.ko /home/vipul/Downloads/one/one.o /home/vipul/Downloads/one/one.mod.o ;  true
