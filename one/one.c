@@ -39,23 +39,23 @@ int onebyte_release(struct inode *inode, struct file *filep)
 
 ssize_t onebyte_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 {
-	int error_count = copy_to_user(buf, onebyte_data, sizeof(char));
+	int nc = copy_to_user(buf, onebyte_data, sizeof(char));
 	
-	if(error_count == 0){
-		return 0;	
+	if(nc == 0){
+		return 1;	
 	}
 	else{
-		return -EFAULT;	
+		return 0;	
 	}	
 }
 
 ssize_t onebyte_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos)
 {
-	int error_count = copy_from_user(onebyte_data, buf, sizeof(char));
+	int nc = copy_from_user(onebyte_data, buf, sizeof(char));
 
 	if(count > 1){
 		printk(KERN_ALERT "Number of characters entered are more than one.");
-		return -1;
+		return -ENOSPC;
 	}
 
 	return 1;
