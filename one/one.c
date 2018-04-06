@@ -18,8 +18,6 @@ ssize_t onebyte_write(struct file *filep, const char *buf,
 size_t count, loff_t *f_pos);
 static void onebyte_exit(void);
 
-static short data_size = 1;
-
 /* definition of file_operation structure */
 struct file_operations onebyte_fops = {
 	read: onebyte_read,
@@ -41,27 +39,26 @@ int onebyte_release(struct inode *inode, struct file *filep)
 
 ssize_t onebyte_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 {
-	int nc = copy_to_user(buf, onebyte_data, data_size);
+	int error_count = copy_to_user(buf, onebyte_data, sizeof(char));
 	
-	if(nc == 0){
-		return data_size--;	
+	if(error_count == 0){
+		return 0;	
 	}
 	else{
-		return 0;	
+		return -EFAULT;	
 	}	
 }
 
 ssize_t onebyte_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos)
 {
-	int nc = copy_from_user(onebyte_data, buf, sizeof(char));
-	data_size = 1;
+	int error_count = copy_from_user(onebyte_data, buf, sizeof(char));
 
 	if(count > 1){
 		printk(KERN_ALERT "Number of characters entered are more than one.");
-		return -ENOSPC;
+		return -1;
 	}
 
-	return count-nc;
+	return 1;
 }
 
 static int onebyte_init(void)
