@@ -44,8 +44,7 @@ ssize_t onebyte_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 	int nc = copy_to_user(buf, onebyte_data, data_size);
 	
 	if(nc == 0){
-		data_size--;
-		return 1;
+		return data_size--;	
 	}
 	else{
 		return 0;	
@@ -54,7 +53,8 @@ ssize_t onebyte_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 
 ssize_t onebyte_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos)
 {
-	int nc = copy_from_user(onebyte_data, buf, data_size);
+	int nc = copy_from_user(onebyte_data, buf, sizeof(char));
+	data_size = 1;
 
 	if(count > 1){
 		printk(KERN_ALERT "Number of characters entered are more than one.");
